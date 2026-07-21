@@ -3,7 +3,7 @@
     display: none;
 }
 
-[data-theme="light"] .sun {
+[data-theme="light"] #sun {
     display: none;
 }
 
