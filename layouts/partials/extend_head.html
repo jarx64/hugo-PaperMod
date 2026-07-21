@@ -1,4 +1,17 @@
 {{- /* Head custom content area start */ -}}
 {{- /*     Insert any custom code (web-analytics, resources, etc.) - it will appear in the <head></head> section of every page. */ -}}
 {{- /*     Can be overwritten by partial with the same name in the global layouts. */ -}}
+
+{{- /* Tailwind CSS */ -}}
+{{- $tailwind := resources.Get "css/tailwind.css" }}
+{{- $tailwind = $tailwind | css.PostCSS }}
+{{- if hugo.IsProduction }}
+  {{- $tailwind = $tailwind | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $tailwind.RelPermalink }}" integrity="{{ $tailwind.Data.Integrity }}">
+{{- else }}
+  <link rel="stylesheet" href="{{ $tailwind.RelPermalink }}">
+{{- end }}
+
 {{- /* Head custom content area end */ -}}
+
+
