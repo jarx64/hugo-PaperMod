@@ -95,26 +95,12 @@
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
         const html = document.querySelector("html");
-        const slider = document.getElementById("theme-toggle-slider");
-        const moon = document.getElementById("moon");
-        const sun = document.getElementById("sun");
-        
         if (html.dataset.theme === "dark") {
             html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
-            // Animate to left (light mode - sun)
-            slider.classList.remove("translate-x-7");
-            slider.classList.add("translate-x-0");
-            moon.classList.add("hidden");
-            sun.classList.remove("hidden");
         } else {
             html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
-            // Animate to right (dark mode - moon)
-            slider.classList.remove("translate-x-0");
-            slider.classList.add("translate-x-7");
-            sun.classList.add("hidden");
-            moon.classList.remove("hidden");
         }
     })
 

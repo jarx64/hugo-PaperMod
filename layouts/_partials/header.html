@@ -1,139 +1,114 @@
-<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/80 backdrop-blur-md border-b border-border/50 py-2">
-    <nav class="container mx-auto px-6 md:px-12">
-        <div class="flex items-center justify-between">
-            {{- $currentPage := . }}
-            
-            <!-- Left side: Logo and Blog link -->
-            <div class="flex items-center gap-8">
-                <a href="{{ "/" | absLangURL }}" title="JAR_" class="font-mono font-bold text-xl tracking-tighter text-primary hover:text-primary/80 transition-colors">
-                    ~/
-                </a>
-                <a href="{{ "" | absLangURL }}" class="hidden md:inline-flex items-center justify-center px-4 py-1.5 text-xs font-mono font-medium text-primary-foreground bg-primary border border-transparent rounded-full hover:bg-primary/90 hover:scale-105 hover:shadow-[0_0_15px_rgba(var(--primary),0.5)] transition-all duration-300 transform" title="~/blog">
-                    ~/blog
-                </a>
-            </div>
-
-            <!-- Right side: Desktop Nav & Utilities -->
-            <div class="hidden md:flex items-center gap-8">
-                <nav class="flex items-center gap-6">
-                    {{- range site.Menus.main }}
-                    {{- if ne .Identifier "blog" }}
-                    {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
-                    {{- $page_url:= $currentPage.Permalink | absLangURL }}
-                    <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}" class="nav-link text-xs transition-colors {{ if eq $menu_item_url $page_url }}font-medium text-primary border-b-2 border-current{{ else }}text-muted-foreground hover:text-primary{{ end }}">
-                        {{- .Name -}}
-                    </a>
+<header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            {{- $label_text := (site.Params.label.text | default site.Title) }}
+            {{- if site.Title }}
+            <a href="{{ "" | absLangURL }}" accesskey="h" title="{{ $label_text }} (Alt + H)">
+                {{- if site.Params.label.icon }}
+                {{- $img := resources.Get site.Params.label.icon }}
+                {{- if $img }}
+                    {{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif") -}}
+                    {{- if hugo.IsExtended -}}
+                        {{- $processableFormats = $processableFormats | append "webp" -}}
+                    {{- end -}}
+                    {{- $prod := (hugo.IsProduction | or (eq site.Params.env "production")) }}
+                    {{- if and (in $processableFormats $img.MediaType.SubType) (eq $prod true)}}
+                        {{- if site.Params.label.iconHeight }}
+                            {{- $img = $img.Resize (printf "x%d" site.Params.label.iconHeight) }}
+                        {{ else }}
+                            {{- $img = $img.Resize "x30" }}
+                        {{- end }}
                     {{- end }}
-                    {{- end }}
-                </nav>
-                
-                <div class="w-px h-4 bg-border"></div>
-                
-                {{- if (not site.Params.disableThemeToggle) }}
-                <!-- <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme" class="relative w-14 h-7 rounded-full bg-secondary border border-primary transition-all duration-300 hover:shadow-[0_0_10px_rgba(var(--primary),0.3)] focus:outline-none focus:ring-2 focus:ring-primary/20">
-                    <span id="theme-toggle-slider" class="absolute top-[1px] left-[1px] w-6 h-6 rounded-full shadow-md flex items-center justify-center transition-all duration-300 translate-x-0 bg-primary dark:translate-x-7">
-                        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="white" stroke="white" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="white" stroke="white" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    </span>
-                </button> -->
-                {{- end }}
-            </div>
-            
-            <!-- Mobile Menu Button -->
-            <!-- <div class="flex items-center gap-4 md:hidden">
-                {{- if (not site.Params.disableThemeToggle) }}
-                <button id="mobile-theme-toggle" aria-label="Toggle theme" class="relative w-14 h-7 rounded-full bg-secondary border border-primary transition-all duration-300 hover:shadow-[0_0_10px_rgba(var(--primary),0.3)] focus:outline-none focus:ring-2 focus:ring-primary/20">
-                    <span id="mobile-theme-toggle-slider" class="absolute top-[1px] left-[1px] w-6 h-6 rounded-full shadow-md flex items-center justify-center transition-all duration-300 translate-x-0 bg-primary dark:translate-x-7">
-                        <svg id="mobile-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="white" stroke="white" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="hidden dark:block">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                        <svg id="mobile-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="white" stroke="white" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="dark:hidden">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    </span>
-                </button>
-                {{- end }}
-                <button id="mobile-menu-button" class="p-1 text-foreground hover:text-primary transition-colors" aria-label="Toggle menu" aria-expanded="false">
-                    <svg id="mobile-menu-open-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
-                        <line x1="4" x2="20" y1="12" y2="12"/>
-                        <line x1="4" x2="20" y1="6" y2="6"/>
-                        <line x1="4" x2="20" y1="18" y2="18"/>
-                    </svg>
-                    <svg id="mobile-menu-close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 hidden">
-                        <line x1="18" x2="6" y1="6" y2="18"/>
-                        <line x1="6" x2="18" y1="6" y2="18"/>
-                    </svg>
-                </button>
-            </div> -->
-        </div>
-    </nav>
-    
-    <!-- Mobile Nav -->
-    <!-- <nav id="mobile-menu" class="hidden md:hidden bg-background/95 backdrop-blur-xl border-b border-border absolute w-full left-0 top-full p-6 animate-fade-in-up">
-        <div class="flex flex-col gap-4">
-            {{- $current := . }}
-            {{- range site.Menus.main }}
-            <a href="{{ .URL | absLangURL }}" class="font-mono text-lg {{ if $current.IsMenuCurrent "main" . }}text-primary{{ else }}text-muted-foreground{{ end }} hover:text-primary transition-colors" onclick="document.getElementById('mobile-menu-button').click()">
-                {{ .Name }}
+                    <img src="{{ $img.Permalink }}" alt="" aria-label="logo"
+                        height="{{- site.Params.label.iconHeight | default "30" -}}">
+                {{- else }}
+                <img src="{{- site.Params.label.icon | absURL -}}" alt="" aria-label="logo"
+                    height="{{- site.Params.label.iconHeight | default "30" -}}">
+                {{- end -}}
+                {{- else if hasPrefix site.Params.label.iconSVG "<svg" }}
+                    {{ site.Params.label.iconSVG | safeHTML }}
+                {{- end -}}
+                {{- $label_text -}}
             </a>
             {{- end }}
+
+            {{- $lsenabled := (or (not site.Params.disableThemeToggle) (and (not site.Params.disableLangToggle) (hugo.IsMultilingual))) }}
+            {{- if $lsenabled }}
+            <div class="logo-switches">
+                {{- if (not site.Params.disableThemeToggle) }}
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                {{- end }}
+                
+                {{- if (not site.Params.disableLangToggle) }}
+                    {{- $lang := .Lang}}
+                    {{- with site.Home.Translations }}
+                    {{- $separator := or $label_text (not site.Params.disableThemeToggle)}}
+                    {{- if $separator }}<span class="nav-sep">|</span>{{ end }}
+                    <ul class="lang-menu">
+                        {{- range . -}}
+                        {{- if ne $lang .Lang }}
+                        <li>
+                            <a href="{{- .Permalink -}}" title="{{ .Language.Params.languageAltTitle | default (.Language.LanguageName | emojify) | default (.Lang | title) }}"
+                                aria-label="{{ .Language.LanguageName | default (.Lang | title) }}">
+                                {{- if (and site.Params.displayFullLangName (.Language.LanguageName)) }}
+                                {{- .Language.LanguageName | emojify -}}
+                                {{- else }}
+                                {{- .Lang | title -}}
+                                {{- end -}}
+                            </a>
+                        </li>
+                        {{- end -}}
+                        {{- end}}
+                    </ul>
+                    {{- end }}
+                {{- end }}
+            </div>
+            {{- end }}
         </div>
-    </nav> -->
+        {{- $currentPage := . }}
+        <ul id="menu" class="menu">
+            {{- range site.Menus.main }}
+            {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
+            {{- $page_url:= $currentPage.Permalink | absLangURL }}
+            {{- $is_search := eq (site.GetPage .KeyName).Layout `search` }}
+            <li>
+                <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }} {{- cond $is_search (" (Alt + /)" | safeHTMLAttr) ("" | safeHTMLAttr ) }}"
+                {{- cond $is_search (" accesskey=/" | safeHTMLAttr) ("" | safeHTMLAttr ) }}>
+                    <span {{- if eq $menu_item_url $page_url }} class="active" {{- end }}>
+                        {{- .Pre }}
+                        {{- .Name -}}
+                        {{ .Post -}}
+                    </span>
+                    {{- if (findRE "://" .URL) }}&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                    {{- end }}
+                </a>
+            </li>
+            {{- end }}
+        </ul>
+    </nav>
 </header>
-<script>
-    (function() {
-        const menuButton = document.getElementById('mobile-menu-button');
-        if (!menuButton) return;
-        const mobileMenu = document.getElementById('mobile-menu');
-        const openIcon = document.getElementById('mobile-menu-open-icon');
-        const closeIcon = document.getElementById('mobile-menu-close-icon');
-
-        menuButton.addEventListener('click', () => {
-            const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-            menuButton.setAttribute('aria-expanded', !isExpanded);
-            mobileMenu.classList.toggle('hidden');
-            openIcon.classList.toggle('hidden');
-            closeIcon.classList.toggle('hidden');
-        });
-        
-        // Also toggle theme on mobile
-        const themeToggleMobile = document.getElementById('mobile-theme-toggle');
-        if (themeToggleMobile) {
-            const themeToggleDesktop = document.getElementById('theme-toggle');
-            themeToggleMobile.addEventListener('click', () => {
-                if (themeToggleDesktop) {
-                    themeToggleDesktop.click();
-                }
-            });
-        }
-    })();
-</script>
-
