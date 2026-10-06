@@ -26,6 +26,31 @@
         {{- block "main" . }}{{ end }}
     </main>
     {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") -}}
+    {{ if .Store.Get "hasMermaid" }}
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+        primaryColor: '#6688f6',
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: '#2563eb',
+
+        secondaryColor: '#955cf6',
+        secondaryTextColor: '#ffffff',
+        secondaryBorderColor: '#7c3aed',
+
+        tertiaryColor: '#0f766e',
+        tertiaryTextColor: '#ffffff',
+        tertiaryBorderColor: '#0d9488',
+
+        lineColor: '#64748b',
+        textColor: '#334155'
+    }
+});
+        </script>
+    {{ end }}
 </body>
 
 </html>
