@@ -67,8 +67,8 @@
 
 .home-link {
     color: oklch(var(--portfolio-primary));
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 500;
     line-height: 28px;
     letter-spacing: -0.05em;
     transition: color 300ms ease;
